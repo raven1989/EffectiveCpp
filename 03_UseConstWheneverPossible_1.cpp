@@ -29,6 +29,7 @@ public:
   int& operator[](size_t p){
     const_cast<int&>(                 //将结果去除const
         static_cast<const B&>(*this) //将this变成const B 类型
+        //reinterpret_cast<const B&>(*this) //static_cast, reinterpret_cast 皆可
             [p]);                        //调用const operator[]
   }
   const int& operator[](size_t p) const {
@@ -59,6 +60,12 @@ int main(){
 
   const B b1(2);
   cout << b1[2] << endl;
+
+  //static_cast 如果需要截断补齐指针偏移编译器会去做
+  //而reinterpret_cast仅仅是memcpy一样，切目标类型只能是指针或引用
+  double dd = 3.1415926;
+  int pi = static_cast<int>(dd);
+  cout << pi << endl;
 
   return 0;
 }

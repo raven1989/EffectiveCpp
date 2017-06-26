@@ -28,10 +28,12 @@ private:
 	const int b;
 	char * p;
 	//除了这几个类型，static都必须在外面初始化
+	//整类型的: integer, char, bool
 	static const int i = 5;
 	static const short si = 5;
 	static const long l = 5;
 	static const char c = 'c';
+  static const bool bo = false;
 	// static const double d = 5.0;
 	static const double d; 
 	// static const char* chars = "A";
