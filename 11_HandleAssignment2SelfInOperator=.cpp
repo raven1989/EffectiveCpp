@@ -1,11 +1,21 @@
 #include<iostream>
+#include<cstring>
+#include<algorithm>
 using namespace std;
 
 // 1. 自我赋值会引发一些错误
 class BitMap{
 public:
+  BitMap(const string& name);
+  const string getName() const;
 	void heartBeat();
+private:
+  string name_;
 };
+BitMap::BitMap(const string& name):name_(name){};
+const string BitMap::getName() const{
+  return name_;
+}
 void BitMap::heartBeat(){
 	cout << "I'm ok." << endl;
 }
@@ -65,11 +75,20 @@ public:
 	WidgetIII& operator=(const WidgetIII& other){
 		WidgetIII replica(other);
 		swap(replica);
+    // std 提供的swap出现了段错误，再琢磨下
+    // std::swap(*this, replica);
 		return *this;
 	}
-private:
+  const string getBitMapName() const{
+    return pb_->getName();
+  }
+public:
 	void swap(WidgetIII& other){
 		// 交换*this和other的数据
+    // 试试用memcpy来做
+    WidgetIII tmp(*this);
+    memcpy(this, static_cast<const WidgetIII*>(&other), sizeof(*this));
+    memcpy(&other, static_cast<const WidgetIII*>(&tmp), sizeof(*this));
 	}
 public:
 	BitMap* pb_;
@@ -78,5 +97,14 @@ WidgetIII::WidgetIII(BitMap& b) : pb_(&b){
 }
 
 int main(){
+  BitMap bml("left");
+  BitMap bmr("right");
+  WidgetIII wl(bml);
+  WidgetIII wr(bmr);
+  cout << wl.getBitMapName() << " : " << wr.getBitMapName() << endl;
+  swap(wl, wr);
+  cout << wl.getBitMapName() << " : " << wr.getBitMapName() << endl;
+  wl = wr;
+  cout << wl.getBitMapName() << " : " << wr.getBitMapName() << endl;
 	return 0;
 }
